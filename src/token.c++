@@ -1,7 +1,11 @@
+#ifndef TOKEN_CPP
+#define TOKEN_CPP
+
 #include <cctype>
 #include <cstdio>
-#include <iostream>
 #include <list>
+#include <stdexcept>
+#include <string>
 
 enum TokenType
 {
@@ -23,7 +27,7 @@ struct Token
     int column;
 };
 
-std::list<Token> tokenize(FILE *fptr)
+std::list<Token> tokenize(FILE* fptr)
 {
     std::list<Token> tokens = std::list<Token>();
     int line = 1;
@@ -104,3 +108,32 @@ std::string token_type_string(TokenType type)
     }
     return "UNKNOWN";
 }
+
+void assert_token(Token token, TokenType expected)
+{
+    std::string expected_str = token_type_string(expected);
+    if (token.type != expected)
+    {
+        throw std::runtime_error("Expected token type");
+    }
+}
+void assert_terminator_token(Token token)
+{
+    if (token.type != TokenType::T_COMMA && token.type != TokenType::T_RIGHT_CURLY_BRACE)
+    {
+        std::printf("expected comma or right curly brace got: %c (%s)\n", token.value,
+                    token_type_string(token.type).c_str());
+        exit(1);
+    }
+}
+
+Token read_token(std::list<Token>* tokens)
+{
+    Token token = tokens->front();
+    tokens->pop_front();
+
+    return token;
+}
+Token peek_token(std::list<Token>* tokens) { return tokens->front(); }
+
+#endif

@@ -1,7 +1,10 @@
+#ifndef TOKEN_H
+#define TOKEN_H
 #include <cctype>
 #include <cstdio>
-#include <iostream>
 #include <list>
+#include <stdexcept>
+#include <string>
 
 enum TokenType
 {
@@ -14,7 +17,6 @@ enum TokenType
     T_QUOTE,
     T_COLON,
 };
-
 struct Token
 {
     TokenType type;
@@ -22,6 +24,12 @@ struct Token
     int line;
     int column;
 };
-
-std::list<Token> tokenize(FILE *fptr);
+std::list<Token> tokenize(FILE* fptr);
 std::string token_type_string(TokenType type);
+void assert_token(Token token, TokenType expected);
+void assert_terminator_token(Token token);
+
+Token read_token(std::list<Token>* tokens);
+Token peek_token(std::list<Token>* tokens);
+
+#endif
